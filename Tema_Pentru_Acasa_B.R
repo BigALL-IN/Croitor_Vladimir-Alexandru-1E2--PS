@@ -111,32 +111,26 @@ rezultat = B4_a(10000, 15000, n, p, q)
 cat("Numărul mediu de ani: ", rezultat, "\n")
 
 
-B4_b = function(num_simulari, num_utilizatori_initial, num_utilizatori_doriti, n, p, q) {
-  count_succes = 0
+B4_b = function(n,p,q)
+{
+  utilizatori_actuali = 10000
+  luni = 40*12 + 10
   
-  for (simulare in 1:num_simulari) {
-    ani_totali = 40 + 10/12
-    num_utilizatori_final = num_utilizatori_initial
+  for(i in 1:luni)
+  {
+ 
+    noi_utilizatori = rbinom(1, floor(n / 12), p)
+    utilizatori_pierduti = rbinom(1, utilizatori_actuali, q / 12)
+    utilizatori_actuali = utilizatori_actuali + noi_utilizatori - utilizatori_pierduti
     
-    for (ani in 1:floor(ani_totali)) {
-      noi_utilizatori = rbinom(1, n, p)
-      utilizatori_retragere = rbinom(1, num_utilizatori_final, q)
-      
-      num_utilizatori_final = num_utilizatori_final + noi_utilizatori - utilizatori_retragere
-    }
-    
-    if (num_utilizatori_final >= num_utilizatori_doriti) {
-      count_succes = count_succes + 1
+    if (utilizatori_actuali >= 15000) {
+      return(1)
     }
   }
-  
-  probabilitate = count_succes / num_simulari
-  
-  return(probabilitate)
+  return(0)
 }
 
-rezultat = B4_b(10000, 10000, 15000, 1000, 0.25, 0.01)
-cat("Probabilitatea: ", rezultat, "\n")
+mean(replicate(1000, B4_b(1000,0.25,0.01)))
 
 
 #B4_c
